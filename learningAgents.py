@@ -187,10 +187,12 @@ class ReinforcementAgent(ValueEstimationAgent):
         self.policyCount = 0
         """
         self.temperature = float(1.5)
-        self.eta = 0.01
+        self.eta = self.epsilon
         self.lamda = 1.008
         self.randomCount = 0
         self.policyCount = 0
+        self.listx = []
+        self.listy = []
 
     ################################
     # Controls needed for Crawler  #
@@ -237,9 +239,9 @@ class ReinforcementAgent(ValueEstimationAgent):
         deltaReward = state.getScore() - self.lastState.getScore()
         self.observeTransition(self.lastState, self.lastAction, state, deltaReward)
         self.stopEpisode()
-
+        
         self.temperature = self.lamda * self.temperature
-
+        
         # print self.temperature
 
         # Make sure we have this var
@@ -259,6 +261,8 @@ class ReinforcementAgent(ValueEstimationAgent):
                        self.episodesSoFar,self.numTraining)
                 print '\tAverage Rewards over all training: %.2f' % (
                         trainAvg)
+                self.listx.append(self.episodesSoFar)
+                self.listy.append(state.data.score)
             else:
                 testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
                 print '\tCompleted %d test episodes' % (self.episodesSoFar - self.numTraining)
@@ -267,6 +271,7 @@ class ReinforcementAgent(ValueEstimationAgent):
                     NUM_EPS_UPDATE,windowAvg)
             print '\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime)
             print self.randomCount, self.policyCount
+            print "epsilon - "+str(self.epsilon)
             self.randomCount = 0
             self.policyCount = 0
             self.lastWindowAccumRewards = 0.0
@@ -276,3 +281,10 @@ class ReinforcementAgent(ValueEstimationAgent):
             msg = 'Training Done (turning off epsilon and alpha)'
             print '%s\n%s' % (msg,'-' * len(msg))
             self.temperature = float(-100.0)
+            """
+            import matplotlib.pyplot as plt
+            plt.ylabel("episodes")
+            plt.xlabel("score")
+            plt.plot(self.listx,self.listy)
+            plt.show()
+            """
