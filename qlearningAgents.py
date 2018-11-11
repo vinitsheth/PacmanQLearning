@@ -190,3 +190,28 @@ class ApproximateQAgent(PacmanQAgent):
 
         if self.episodesSoFar == self.numTraining:
             pass
+class ApproximateQAgentMetro(PacmanQAgentMetro):
+    def __init__(self, extractor='SimpleExtractor', **args):
+        self.featExtractor = util.lookup(extractor, globals())()
+        PacmanQAgentMetro.__init__(self, **args)
+        self.weights = util.Counter()
+
+    def getWeights(self):
+        return self.weights
+
+    def getQValue(self, state, action):
+        return self.weights * self.featExtractor.getFeatures(state, action)
+
+    def update(self, state, action, nextState, reward):
+        diff = reward + self.discount * self.getValue(nextState) - self.getQValue(state, action)
+        features = self.featExtractor.getFeatures(state, action)
+        for feature in features:
+            self.weights[feature] += self.alpha * diff * features[feature]
+
+    def final(self, state):
+        "Called at the end of each game."
+        # call the super-class final method
+        PacmanQAgentMetro.final(self, state)
+
+        if self.episodesSoFar == self.numTraining:
+            pass
