@@ -33,7 +33,7 @@ class ValueEstimationAgent(Agent):
       Q-Values while acting in the environment.
     """
 
-    def __init__(self, alpha=1.0, epsilon=0.05, gamma=0.8, numTraining = 10):
+    def __init__(self, alpha=1.0, epsilon=0.1, gamma=0.8, numTraining = 10):
         """
         Sets options, which can be passed in via the Pacman command line using -a alpha=0.5,...
         alpha    - learning rate
@@ -160,7 +160,7 @@ class ReinforcementAgent(ValueEstimationAgent):
     def isInTesting(self):
         return not self.isInTraining()
 
-    def __init__(self, actionFn = None, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
+    def __init__(self, actionFn = None, numTraining=100, epsilon=0.1, alpha=0.5, gamma=1):
         """
         actionFn: Function which takes a state and returns the list of legal actions
 
@@ -176,7 +176,7 @@ class ReinforcementAgent(ValueEstimationAgent):
         self.accumTrainRewards = 0.0
         self.accumTestRewards = 0.0
         self.numTraining = int(numTraining)
-        self.epsilon = float(epsilon)
+        self.epsilon = 0.1
         self.alpha = float(alpha)
         self.discount = float(gamma)
         """
@@ -193,6 +193,8 @@ class ReinforcementAgent(ValueEstimationAgent):
         self.policyCount = 0
         self.listx = []
         self.listy = []
+        self.listRandomCount =[]
+        self.listPolicyCount = []
 
     ################################
     # Controls needed for Crawler  #
@@ -262,7 +264,7 @@ class ReinforcementAgent(ValueEstimationAgent):
                 print '\tAverage Rewards over all training: %.2f' % (
                         trainAvg)
                 self.listx.append(self.episodesSoFar)
-                self.listy.append(state.data.score)
+                
             else:
                 testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
                 print '\tCompleted %d test episodes' % (self.episodesSoFar - self.numTraining)
@@ -271,7 +273,10 @@ class ReinforcementAgent(ValueEstimationAgent):
                     NUM_EPS_UPDATE,windowAvg)
             print '\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime)
             print self.randomCount, self.policyCount
-            print "epsilon - "+str(self.epsilon)
+            self.listRandomCount.append(self.randomCount)
+            self.listPolicyCount.append(self.policyCount)
+
+            print "epsilon - "+str(self.epsilon)+" Tempreature - "+str(self.temperature)
             self.randomCount = 0
             self.policyCount = 0
             self.lastWindowAccumRewards = 0.0
@@ -281,10 +286,16 @@ class ReinforcementAgent(ValueEstimationAgent):
             msg = 'Training Done (turning off epsilon and alpha)'
             print '%s\n%s' % (msg,'-' * len(msg))
             self.temperature = float(-100.0)
+            #print self.listx
+            #print self.listy
             """
             import matplotlib.pyplot as plt
-            plt.ylabel("episodes")
-            plt.xlabel("score")
-            plt.plot(self.listx,self.listy)
+            
+            plt.xlabel("episodes")
+            plt.plot(self.listx,self.listRandomCount)
+            plt.plot(self.listx,self.listPolicyCount)
+            
             plt.show()
+            
             """
+            

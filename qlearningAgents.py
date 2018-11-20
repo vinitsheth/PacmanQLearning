@@ -111,8 +111,9 @@ class QLearningAgentMetro(ReinforcementAgent):
         valueR = self.getQValue(state, actionR)
         actionP = self.computeActionFromQValues(state)
         valueP = self.getQValue(state, actionP)
+        e  = random.random()
 
-        if self.eta < np.exp(valueR - valueP)/float(self.temperature):
+        if e < np.exp(valueR - valueP)/float(self.temperature):
             self.randomCount += 1
             return actionR
         else:

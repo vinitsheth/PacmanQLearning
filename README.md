@@ -19,3 +19,11 @@ Metropolis :
     python pacman.py -p PacmanQAgentMetro -x 2000 -n 2010 -l smallGrid
 
     python pacman.py -p PacmanQAgentMetro -x 2000 -n 2010 -l mediumGrid
+
+Feature Based :
+    
+python pacman.py -p ApproximateQAgent -x 2000 -n 2010 -l smallGrid
+
+python pacman.py -p ApproximateQAgentMetro -x 2000 -n 2010 -l smallGrid
+
+python pacman.py -p ApproximateQAgentMetro -x 2000 -n 2010 -l mediumGrid
