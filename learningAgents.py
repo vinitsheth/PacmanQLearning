@@ -186,7 +186,7 @@ class ReinforcementAgent(ValueEstimationAgent):
         self.randomCount = 0
         self.policyCount = 0
         """
-        self.temperature = float(1.5)
+        self.temperature = float(1.02)
         self.eta = self.epsilon
         self.lamda = 1.008
         self.randomCount = 0
@@ -264,6 +264,8 @@ class ReinforcementAgent(ValueEstimationAgent):
                 print '\tAverage Rewards over all training: %.2f' % (
                         trainAvg)
                 self.listx.append(self.episodesSoFar)
+
+
                 
             else:
                 testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
@@ -271,8 +273,10 @@ class ReinforcementAgent(ValueEstimationAgent):
                 print '\tAverage Rewards over testing: %.2f' % testAvg
             print '\tAverage Rewards for last %d episodes: %.2f'  % (
                     NUM_EPS_UPDATE,windowAvg)
+            self.listy.append(windowAvg)
             print '\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime)
             print self.randomCount, self.policyCount
+            
             self.listRandomCount.append(self.randomCount)
             self.listPolicyCount.append(self.policyCount)
 
@@ -288,6 +292,21 @@ class ReinforcementAgent(ValueEstimationAgent):
             self.temperature = float(-100.0)
             #print self.listx
             #print self.listy
+            """
+            import pickle
+            path1 = 'Plots/amSmallRandomCount.pickle'
+            path2 = 'Plots/amSmallPolicyCount.pickle'
+            path3 = 'Plots/amSmallscore.pickle'
+            fil1 = open(path1,'wb')
+            fil2 = open(path2,'wb')
+            fil3 = open(path3,'wb')
+            pickle.dump(self.listRandomCount,fil1)
+            pickle.dump(self.listPolicyCount,fil2)
+            pickle.dump(self.listy,fil3)
+            fil1.close()
+            fil2.close()
+            fil3.close()
+            """
             """
             import matplotlib.pyplot as plt
             
